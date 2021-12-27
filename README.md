@@ -1,4 +1,4 @@
-These are replacements to `BottomNavigationBar` and `IndexedStack` that use
+These are replacements to `BottomNavigationBar`, `IndexedStack` and `TabController` that use
 item keys instead if numeric indexes.
 
 ## Problem ##
@@ -21,11 +21,13 @@ you must write code to convert between `enum` and `int`.
 With this package you can use your `enum` directly with collection widgets.
 See the full runnable example in the `example` folder.
 
+### KeyedBottomNavigationBar and KeyedStack
+
 ```dart
-enum Tab {favorites, search}
+enum MyTab {favorites, search}
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  Tab _tab = Tab.favorites;
+  MyTab _tab = MyTab.favorites;
 
   @override
   Widget build(BuildContext context) {
@@ -33,27 +35,72 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     // meaningful if they contain stateful widgets to preserve state
     // between switches.
     return Scaffold(
-      body: KeyedStack<Tab>(
+      body: KeyedStack<MyTab>(
         itemKey: _tab,
         children: const {
-          Tab.favorites: Center(child: Text('Favorites')),
-          Tab.search: Center(child: Text('Search')),
+          MyTab.favorites: Center(child: Text('Favorites')),
+          MyTab.search: Center(child: Text('Search')),
         },
       ),
-      bottomNavigationBar: KeyedBottomNavigationBar<Tab>(
+      bottomNavigationBar: KeyedBottomNavigationBar<MyTab>(
         currentItemKey: _tab,
         items: const {
-          Tab.favorites: BottomNavigationBarItem(
+          MyTab.favorites: BottomNavigationBarItem(
             icon: Icon(Icons.star),
             label: 'Favorites',
           ),
-          Tab.search: BottomNavigationBarItem(
+          MyTab.search: BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Search',
           ),
         },
         onTap: (tab) => setState((){ _tab = tab; }),
       ),
+    );
+  }
+}
+```
+
+### KeyedTabController, KeyedTabBar, KeyedTabBarView
+
+```dart
+enum MyTab {one, two, three}
+
+class _MyHomeScreenState extends State<MyHomeScreen> with TickerProviderStateMixin {
+  late final KeyedTabController<MyTab> _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = KeyedTabController<MyTab>(
+      initialKey: MyTab.three,
+      keys: [MyTab.one, MyTab.two, MyTab.three],
+      vsync: this,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        KeyedTabBar(
+          tabs: {
+            for (final key in _tabController.keys)
+              key: Tab(child: Text(key.toString())),
+          },
+          controller: _tabController,
+          labelColor: Theme.of(context).colorScheme.secondary,
+        ),
+        Expanded(
+          child: KeyedTabBarView(
+            children: {
+              for (final key in _tabController.keys)
+                key: Text("$key content"),
+            },
+            controller: _tabController,
+          ),
+        ),
+      ],
     );
   }
 }
