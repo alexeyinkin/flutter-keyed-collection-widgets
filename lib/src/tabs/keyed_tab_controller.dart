@@ -18,11 +18,12 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     required List<K> keys,
     required TickerProvider vsync,
   }) :
-      assert(initialKey == null || keys.contains(initialKey)),
       _keys = keys,
       _vsync = vsync,
       _indexedController = TabController(
-        initialIndex: initialKey == null ? 0 : keys.indexOf(initialKey),
+        initialIndex: initialKey == null
+            ? 0
+            : max(keys.indexOf(initialKey), 0), // If not found: -1 -> 0.
         length: keys.length,
         vsync: vsync,
       )
@@ -36,14 +37,14 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
 
   void animateToKey(K key, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
     _indexedController.animateTo(
-      _keys.indexOf(key),
+      max(_keys.indexOf(key), 0),
       duration: kTabScrollDuration,
       curve: curve,
     );
   }
 
   set keys(List<K> keys) {
-    final oldKey = _keys[_indexedController.index];
+    final oldKey = _keys.isEmpty ? null : _keys[_indexedController.index];
     setKeysAndCurrentKey(keys, oldKey);
   }
   List<K> get keys => _keys;
@@ -106,7 +107,12 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   @override
   double get offset => _indexedController.offset;
 
-  set currentKey(K? value) => _indexedController.index = (value == null ? 0 : _keys.indexOf(value));
+  set currentKey(K? value) {
+    _indexedController.index = value == null
+        ? 0
+        : max(_keys.indexOf(value), 0);
+  }
+
   K? get currentKey {
     final index = this.index;
     return index >= 0 && index < _keys.length ? _keys[index] : null;
