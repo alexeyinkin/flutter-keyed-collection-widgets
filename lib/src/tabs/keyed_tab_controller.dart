@@ -16,6 +16,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   KeyedTabController({
     required K? initialKey,
     required List<K> keys,
+    Duration? animationDuration,
     required TickerProvider vsync,
   }) :
       _keys = keys,
@@ -24,6 +25,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
         initialIndex: initialKey == null
             ? 0
             : max(keys.indexOf(initialKey), 0), // If not found: -1 -> 0.
+        animationDuration: animationDuration,
         length: keys.length,
         vsync: vsync,
       )
@@ -119,12 +121,15 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   }
 
   @override
-  void animateTo(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
-    _indexedController.animateTo(value, duration: kTabScrollDuration, curve: curve);
+  void animateTo(int value, {Duration? duration, Curve curve = Curves.ease}) {
+    _indexedController.animateTo(value, duration: duration, curve: curve);
   }
 
   @override
   Animation<double>? get animation => _indexedController.animation;
+
+  @override
+  Duration get animationDuration => _indexedController.animationDuration;
 
   @override
   bool get indexIsChanging => _indexedController.indexIsChanging;
