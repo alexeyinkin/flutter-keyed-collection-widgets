@@ -1,3 +1,7 @@
+## 0.3.2
+
+* Remove an accidentally published temp file.
+
 ## 0.3.1
 
 * Re-licensed under MIT No Attribution.
