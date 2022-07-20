@@ -1,4 +1,4 @@
-These are replacements to `BottomNavigationBar`, `IndexedStack` and `TabController` that use
+These are replacements to `BottomNavigationBar`, `IndexedStack`, and `TabController` that use
 item keys instead if numeric indexes.
 
 ## Problem ##

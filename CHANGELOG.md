@@ -1,3 +1,14 @@
+## 0.3.0
+
+* **BREAKING:** Require Flutter 3.
+* **BREAKING:** Require `children` in `KeyedStack`.
+* Use `total_lints`, fixed linter issues.
+* Re-licensed under MIT No Attribution.
+* `KeyedBottomNavigationBar` extends `BottomNavigationBar` instead of composition to avoid duplicating properties.
+* `KeyedStack` extends `IndexedStack` instead of composition to avoid duplicating properties.
+* Fixed formatting.
+* Improved docs.
+
 ## 0.2.0
 
 * **BREAKING:** Updated `KeyedTabController` to Flutter 2.10 API, require Flutter 2.10.

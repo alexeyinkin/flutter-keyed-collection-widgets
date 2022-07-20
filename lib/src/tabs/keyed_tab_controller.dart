@@ -13,23 +13,22 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   final TickerProvider _vsync;
   TabController _indexedController;
 
+  ///
   KeyedTabController({
     required K? initialKey,
     required List<K> keys,
     Duration? animationDuration,
     required TickerProvider vsync,
-  }) :
-      _keys = keys,
-      _vsync = vsync,
-      _indexedController = TabController(
-        initialIndex: initialKey == null
-            ? 0
-            : max(keys.indexOf(initialKey), 0), // If not found: -1 -> 0.
-        animationDuration: animationDuration,
-        length: keys.length,
-        vsync: vsync,
-      )
-  {
+  })  : _keys = keys,
+        _vsync = vsync,
+        _indexedController = TabController(
+          initialIndex: initialKey == null
+              ? 0
+              : max(keys.indexOf(initialKey), 0), // If not found: -1 -> 0.
+          animationDuration: animationDuration,
+          length: keys.length,
+          vsync: vsync,
+        ) {
     _indexedController.addListener(_onControllerChanged);
   }
 
@@ -37,7 +36,12 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     notifyListeners();
   }
 
-  void animateToKey(K key, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
+  /// Keyed equivalent to [TabController.animateTo].
+  void animateToKey(
+    K key, {
+    Duration duration = kTabScrollDuration,
+    Curve curve = Curves.ease,
+  }) {
     _indexedController.animateTo(
       max(_keys.indexOf(key), 0),
       duration: kTabScrollDuration,
@@ -49,24 +53,31 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     final oldKey = _keys.isEmpty ? null : _keys[_indexedController.index];
     setKeysAndCurrentKey(keys, oldKey);
   }
+
+  /// Keys of the tabs.
   List<K> get keys => _keys;
 
+  /// Sets [keys] and [currentKey] in one take to only notify listeners once.
+  ///
+  /// If [keys] did not change, it has the same effect as setting [currentKey].
+  ///
+  /// Tries to preserve the currently selected tab. If this key is gone,
+  /// selects the first one.
   void setKeysAndCurrentKey(List<K> keys, K? currentKey) {
     if (listEquals(keys, _keys)) {
       this.currentKey = currentKey;
       return;
     }
 
-    final newIndex = currentKey == null
-        ? 0
-        : max(keys.indexOf(currentKey), 0);
+    final newIndex = currentKey == null ? 0 : max(keys.indexOf(currentKey), 0);
 
     if (_keys.length == keys.length) {
       _keys = keys;
       _indexedController.index = newIndex;
     } else {
-      _indexedController.removeListener(_onControllerChanged);
-      _indexedController.dispose();
+      _indexedController
+        ..removeListener(_onControllerChanged)
+        ..dispose();
 
       _indexedController = TabController(
         initialIndex: newIndex,
@@ -80,6 +91,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     }
   }
 
+  /// Returns the internal [TabController].
   TabController get indexedController => _indexedController;
 
   /// See [KeyedStaticTabController].
@@ -92,8 +104,9 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
 
   @override
   void dispose() {
-    _indexedController.removeListener(_onControllerChanged);
-    _indexedController.dispose();
+    _indexedController
+      ..removeListener(_onControllerChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -110,11 +123,10 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   double get offset => _indexedController.offset;
 
   set currentKey(K? value) {
-    _indexedController.index = value == null
-        ? 0
-        : max(_keys.indexOf(value), 0);
+    _indexedController.index = value == null ? 0 : max(_keys.indexOf(value), 0);
   }
 
+  /// The key of the currently selected tab.
   K? get currentKey {
     final index = this.index;
     return index >= 0 && index < _keys.length ? _keys[index] : null;
@@ -148,7 +160,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     final result = <V>[];
 
     for (final key in keys) {
-      result.add(map[key] ?? (throw Exception('Item not found by tab key: $key')));
+      result.add(map[key] ?? (throw Exception('Item not found by key: $key')));
     }
 
     return result;

@@ -1,9 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'keyed_tab_controller.dart';
 
-/// A replacement to [TabBarView] that uses map of children instead of a list.
+/// A replacement to [TabBarView] that uses a map of children instead of a list.
 ///
 /// Or you may instead just do
 /// ```
@@ -13,17 +12,15 @@ import 'keyed_tab_controller.dart';
 /// )
 /// ```
 class KeyedTabBarView<K> extends TabBarView {
+  ///
   KeyedTabBarView({
-    Key? key,
+    super.key,
     required Map<K, Widget> children,
     required KeyedTabController<K> controller,
-    ScrollPhysics? physics,
-    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+    super.physics,
+    super.dragStartBehavior,
   }) : super(
-    key: key,
-    children: controller.mapToList(children),
-    controller: controller,
-    physics: physics,
-    dragStartBehavior: dragStartBehavior,
-  );
+          children: controller.mapToList(children),
+          controller: controller,
+        );
 }
