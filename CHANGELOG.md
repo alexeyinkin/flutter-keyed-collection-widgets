@@ -1,9 +1,12 @@
+## 0.3.1
+
+* Re-licensed under MIT No Attribution.
+
 ## 0.3.0
 
 * **BREAKING:** Require Flutter 3.
 * **BREAKING:** Require `children` in `KeyedStack`.
 * Use `total_lints`, fixed linter issues.
-* Re-licensed under MIT No Attribution.
 * `KeyedBottomNavigationBar` extends `BottomNavigationBar` instead of composition to avoid duplicating properties.
 * `KeyedStack` extends `IndexedStack` instead of composition to avoid duplicating properties.
 * Fixed formatting.
