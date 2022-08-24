@@ -1,3 +1,7 @@
+## 0.3.3
+
+* Suggested [enum_map](https://pub.dev/packages/enum_map) in README.
+
 ## 0.3.2
 
 * Remove an accidentally published temp file.
