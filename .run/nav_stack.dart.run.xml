@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="nav_stack.dart" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
+    <option name="additionalArgs" value="--web-port=40000" />
+    <option name="filePath" value="$PROJECT_DIR$/example/lib/nav_stack.dart" />
+    <method v="2" />
+  </configuration>
+</component>

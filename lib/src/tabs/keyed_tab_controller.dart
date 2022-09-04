@@ -1,17 +1,27 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'keyed_static_tab_controller.dart';
+import 'unanimated_keyed_tab_controller.dart';
 
 /// A drop-in replacement to [TabController] that can also use keys
 /// instead of indexes.
 class KeyedTabController<K> extends ChangeNotifier implements TabController {
+  UnanimatedKeyedTabController<K>? _unanimated;
   List<K> _keys;
 
   final TickerProvider _vsync;
   TabController _indexedController;
+
+  /// A holder for current [_indexedController]'s [TabController.animation].
+  ///
+  /// [TabBarView] listens directly to [TabController.animation]
+  /// and not [TabController] itself.
+  /// So we must give it a permanent object that will hold the animation
+  /// of the current [_indexedController].
+  final _proxyAnimation =
+      ProxyAnimation(const AlwaysStoppedAnimation<double>(0));
 
   ///
   KeyedTabController({
@@ -21,6 +31,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     required TickerProvider vsync,
   })  : _keys = keys,
         _vsync = vsync,
+        _unanimated = null,
         _indexedController = TabController(
           initialIndex: initialKey == null
               ? 0
@@ -29,11 +40,47 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
           length: keys.length,
           vsync: vsync,
         ) {
+    _proxyAnimation.parent = _indexedController.animation;
     _indexedController.addListener(_onControllerChanged);
+  }
+
+  /// Creates the controller from the given [UnanimatedKeyedTabController]
+  /// [controller] and links the two.
+  KeyedTabController.fromUnanimated({
+    required UnanimatedKeyedTabController<K> controller,
+    Duration? animationDuration,
+    required TickerProvider vsync,
+  })  : _keys = controller.keys,
+        _vsync = vsync,
+        _unanimated = controller,
+        _indexedController = TabController(
+          initialIndex: controller.currentKey == null
+              ? 0
+              : max(controller.keys.indexOf(controller.currentKey as K), 0),
+          animationDuration: animationDuration,
+          length: controller.keys.length,
+          vsync: vsync,
+        ) {
+    _proxyAnimation.parent = _indexedController.animation;
+    _unanimated!.addListener(_onUnanimatedChanged);
+    _indexedController.addListener(_onControllerChanged);
+  }
+
+  void _onUnanimatedChanged() {
+    setKeysAndCurrentKey(
+      _unanimated!.keys,
+      _unanimated!.currentKey,
+    );
   }
 
   void _onControllerChanged() {
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
+    _unanimated?.setKeysAndCurrentKey(keys, currentKey);
   }
 
   /// Keyed equivalent to [TabController.animateTo].
@@ -49,13 +96,13 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     );
   }
 
+  /// Keys of the tabs.
+  List<K> get keys => _keys;
+
   set keys(List<K> keys) {
     final oldKey = _keys.isEmpty ? null : _keys[_indexedController.index];
     setKeysAndCurrentKey(keys, oldKey);
   }
-
-  /// Keys of the tabs.
-  List<K> get keys => _keys;
 
   /// Sets [keys] and [currentKey] in one take to only notify listeners once.
   ///
@@ -64,7 +111,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   /// Tries to preserve the currently selected tab. If this key is gone,
   /// selects the first one.
   void setKeysAndCurrentKey(List<K> keys, K? currentKey) {
-    if (listEquals(keys, _keys)) {
+    if (const ListEquality().equals(keys, _keys)) {
       this.currentKey = currentKey;
       return;
     }
@@ -80,10 +127,12 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
         ..dispose();
 
       _indexedController = TabController(
+        animationDuration: _indexedController.animationDuration,
         initialIndex: newIndex,
         length: keys.length,
         vsync: _vsync,
       );
+      _proxyAnimation.parent = _indexedController.animation;
       _indexedController.addListener(_onControllerChanged);
 
       _keys = keys;
@@ -95,6 +144,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   TabController get indexedController => _indexedController;
 
   /// See [KeyedStaticTabController].
+  @Deprecated('Use fromUnanimated constructor to automatically sync the two')
   void updateFromStatic(KeyedStaticTabController<K> staticController) {
     setKeysAndCurrentKey(
       staticController.keys,
@@ -102,8 +152,29 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     );
   }
 
+  /// The linked [UnanimatedKeyedTabController], if any.
+  UnanimatedKeyedTabController<K>? get unanimated => _unanimated;
+
+  set unanimated(UnanimatedKeyedTabController<K>? value) {
+    if (value == _unanimated) return;
+    _unanimated?.removeListener(_onUnanimatedChanged);
+
+    if (value != null) {
+      setKeysAndCurrentKey(
+        value.keys,
+        value.currentKey,
+      );
+
+      value.addListener(_onUnanimatedChanged);
+      _unanimated = value;
+    }
+
+    notifyListeners();
+ }
+
   @override
   void dispose() {
+    _unanimated?.removeListener(_onUnanimatedChanged);
     _indexedController
       ..removeListener(_onControllerChanged)
       ..dispose();
@@ -123,7 +194,17 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   double get offset => _indexedController.offset;
 
   set currentKey(K? value) {
-    _indexedController.index = value == null ? 0 : max(_keys.indexOf(value), 0);
+    if (value == null) {
+      _indexedController.index = 0;
+      return;
+    }
+
+    final index = _keys.indexOf(value);
+    if (index == -1) {
+      throw ArgumentError('Key $value is not among $_keys');
+    }
+
+    _indexedController.index = index;
   }
 
   /// The key of the currently selected tab.
@@ -138,10 +219,29 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
   }
 
   @override
-  Animation<double>? get animation => _indexedController.animation;
+  Animation<double>? get animation => _proxyAnimation;
 
   @override
   Duration get animationDuration => _indexedController.animationDuration;
+
+  set animationDuration(Duration value) {
+    if (value == _indexedController.animationDuration) return;
+
+    _indexedController
+      ..removeListener(_onControllerChanged)
+      ..dispose();
+
+    _indexedController = TabController(
+      animationDuration: value,
+      initialIndex: _indexedController.index,
+      length: keys.length,
+      vsync: _vsync,
+    );
+    _proxyAnimation.parent = _indexedController.animation;
+    _indexedController.addListener(_onControllerChanged);
+
+    notifyListeners();
+  }
 
   @override
   bool get indexIsChanging => _indexedController.indexIsChanging;

@@ -1,17 +1,17 @@
 name: keyed_collection_widgets
 description: BottomNavigationBar, IndexedStack, and TabController that use item keys instead of indexes.
-version: 0.3.3
+version: 0.4.0
 homepage: https://github.com/alexeyinkin/flutter-keyed-collection-widgets
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: ">=3.3.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  collection: ^1.16.0
+  flutter: { sdk: flutter }
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  total_lints: ^2.17.0
+  flutter_test: { sdk: flutter }
+  golden_toolkit: ^0.13.0
+  total_lints: ^2.18.0

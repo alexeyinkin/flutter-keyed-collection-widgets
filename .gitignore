@@ -74,4 +74,7 @@ build/
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 
-/pubspec.lock
+*.g.dart
+coverage
+failures
+pubspec.lock
