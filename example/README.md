@@ -1,8 +1,11 @@
 # example
 
 All examples here are runnable.
-Download this repository to your computer and open int in your editor.
+Download this repository to your computer and open it in your editor.
 In Android Studio, you can run examples like this:
+
+![Running Examples](https://github.com/alexeyinkin/flutter-keyed-collection-widgets/blob/main/example/img/run-me.gif)
+
 
 ## 1. nav_stack.dart
 

@@ -79,4 +79,6 @@ coverage
 failures
 pubspec.lock
 
-test
+example/*
+!example/README.md
+

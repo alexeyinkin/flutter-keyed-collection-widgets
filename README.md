@@ -8,7 +8,7 @@ item keys instead if numeric indexes.
 
 ## Problem
 
-With traditional widgets you write something like
+With traditional widgets, you write something like
 ```dart
 const tabFavorites = 0;
 const tabSearch = 1;
@@ -18,7 +18,7 @@ if (tabIndex == tabFavorites) {
 }
 ```
 If items in your bar can change, you get an error-prone conversion from indexes to meanings.
-Also with mature architecture you tend to use `enum` for your tabs, and even with constant bar items
+Also with a mature architecture you tend to use `enum` for your tabs, and even with constant bar items
 you must write code to convert between `enum` and `int`.
 
 ## Solution
@@ -153,7 +153,7 @@ code to know that:
 This is extremely error-prone.
 
 With this package, `KeyedTabBar` and `KeyedTabBarView` have maps of children,
-so they can contain more widgets than the controller needs to be able to show.
+so they can contain more widgets than the controller wants to show.
 
 This means that you can unconditionally pass all children for all possible tabs to them,
 and the only location in your code that needs to know what tabs to show is the code that
@@ -201,14 +201,14 @@ then `KeyedTabController` gets updated, and the tab change is animated in the UI
 
 And if the user changes the tab by interacting with it, both controllers get updated.
 
-### Mutable tabs and animation duration
+### Mutable Tabs and Animation Duration
 
-Ordinary `TabController` has a fixed `lenth` and `animationDuration`. If you need to change them,
+Ordinary `TabController` has a fixed `length` and `animationDuration`. If you need to change them,
 you must create a new controller and replace it everywhere.
 
 `KeyedTabController` has these mutable.
 
-You can change the tabs at any time by setting its `keys`
+You can change the tabs at any time by setting `KeyedTabController.keys`
 property. If the currently selected tab also exists in the new set, its selection is preserved,
 otherwise the first new tab gets selected.
 
@@ -271,7 +271,7 @@ Use this if you use `UnanimatedKeyedTabController`.
 
 In Flutter, both `TabBar` and `TabBarView` widgets can be created without
 the `controller` argument. In this case, they rely on `DefaultTabController` widget
-present in the tree above them and break if it does not.
+present in the tree above them and break if it is missing.
 
 This is error-prone because the `controller` argument may simply be forgotten,
 and this cannot be detected at compile time.
@@ -302,7 +302,7 @@ This example shows:
 - Changing the animation duration without re-creating a controller.
 - `DefaultKeyedTabController` widgets.
 - `UnanimatedKeyedTabController`.
-- Replacing `UnanimatedKeyedTabController` that `KeyedTabController` is linked to.
+- Replacing the `UnanimatedKeyedTabController` that a `KeyedTabController` is linked to.
 
 This example is runnable. Download the repository and open the example project.
 Then run [nav_stack_tabs.dart](https://github.com/alexeyinkin/flutter-keyed-collection-widgets/blob/main/example/lib/nav_stack_tabs.dart)
@@ -317,7 +317,7 @@ package that generates maps
 that are guaranteed to have all keys at compile time (see that package's README for more info):
 
 ```dart
-@unmodifiableEnumMap                                            // CHANGED
+@unmodifiableEnumMap                                    // CHANGED
 enum TabEnum { one, two, three }
 
 class _MyScreenState extends State<MyScreen> with TickerProviderStateMixin {
@@ -334,22 +334,28 @@ class _MyScreenState extends State<MyScreen> with TickerProviderStateMixin {
         title: Text('${_tabController.currentKey}'),
         bottom: KeyedTabBar(
           controller: _tabController,
-          tabs: const UnmodifiableTabEnumMap(                   // CHANGED
-            one: Tab(text: 'One'),                              // CHANGED
-            two: Tab(text: 'Two'),                              // CHANGED
-            three: Tab(text: 'Three'),                          // CHANGED
-          ),                                                    // CHANGED
+          tabs: const UnmodifiableTabEnumMap(           // CHANGED
+            one: Tab(text: 'One'),                      // CHANGED
+            two: Tab(text: 'Two'),                      // CHANGED
+            three: Tab(text: 'Three'),                  // CHANGED
+          ),                                            // CHANGED
         ),
       ),
       body: KeyedTabBarView(
         controller: _tabController,
-        children: const UnmodifiableTabEnumMap(                 // CHANGED
-          one: Center(child: Text('One content')),              // CHANGED
-          two: Center(child: Text('Two content')),              // CHANGED
-          three: Center(child: Text('Three content')),          // CHANGED
-        ),                                                      // CHANGED
+        children: const UnmodifiableTabEnumMap(         // CHANGED
+          one: Center(child: Text('One content')),      // CHANGED
+          two: Center(child: Text('Two content')),      // CHANGED
+          three: Center(child: Text('Three content')),  // CHANGED
+        ),                                              // CHANGED
       ),
     );
   }
 }
 ```
+
+## Support Chat
+
+Do you have any questions? Feel free to ask in the [Telegram Support Chat](https://ainkin.com/chat).
+
+Or even just join to say 'Hi!'. I like to hear from the users.

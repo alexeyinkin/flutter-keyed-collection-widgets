@@ -1,3 +1,23 @@
+## 0.4.0
+
+* **BREAKING:** Setting `currentKey` to anything not in `keys` now throws `ArgumentError`.
+  Before it was setting the key to the first valid one.
+* **BREAKING:** Nullable types are disallowed for tabs key type parameter.
+* **BREAKING:** `UnanimatedKeyedTabController` changed the constructor argument `currentKey`
+  to `initialKey` to align with `KeyedTabController` and `TabController`.
+* Renamed `KeyedStaticTabController` to `KeyedUnanimatedTabController` to reduce confusion.
+  A deprecated `typedef` was added for backward compatibility.
+* Added `DefaultKeyedTabController`.
+* Added `KeyedTabController.fromUnanimated` to link the controller with
+  `UnanimatedKeyedTabController`, and `unanimated` getter and setter.
+* Added `KeyedTabController.animationDuration` setter to change the animation
+  duration on an existing controller.
+* Deprecated `KeyedTabController.updateFromStatic()` and
+  `UnanimatedKeyedTabController.updateFromAnimated()`.
+* Expanded the examples.
+* Expanded the README.
+* Added tests.
+
 ## 0.3.3
 
 * Suggested [enum_map](https://pub.dev/packages/enum_map) in README.
