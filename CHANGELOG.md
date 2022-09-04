@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fix formatting.
+
 ## 0.4.0
 
 * **BREAKING:** Setting `currentKey` to anything not in `keys` now throws `ArgumentError`.

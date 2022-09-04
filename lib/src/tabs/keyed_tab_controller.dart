@@ -170,7 +170,7 @@ class KeyedTabController<K> extends ChangeNotifier implements TabController {
     }
 
     notifyListeners();
- }
+  }
 
   @override
   void dispose() {
