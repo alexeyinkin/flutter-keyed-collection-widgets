@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Added `KeyedBottomNavigationBar.keyOrder`.
+
 ## 0.4.1
 
 * Fix formatting.
