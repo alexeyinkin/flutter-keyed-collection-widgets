@@ -16,20 +16,25 @@ class DefaultKeyedTabControllerFromUnanimated<K> extends StatefulWidget
   ///
   const DefaultKeyedTabControllerFromUnanimated({
     super.key,
-    required this.controller,
     required this.child,
+    required this.controller,
     this.animationDuration,
+    this.onChanged,
   });
+
+  /// See [DefaultTabController.animationDuration].
+  final Duration? animationDuration;
+
+  /// See [DefaultTabController.child].
+  final Widget child;
 
   /// The [UnanimatedKeyedTabController] to derive the [KeyedTabController]
   /// from.
   final UnanimatedKeyedTabController<K> controller;
 
-  /// See [DefaultTabController.child].
-  final Widget child;
-
-  /// See [DefaultTabController.animationDuration].
-  final Duration? animationDuration;
+  /// The callback to be called when the controller value changes
+  /// or animation ticks.
+  final ValueChanged<K?>? onChanged;
 
   @override
   State<DefaultKeyedTabControllerFromUnanimated> createState() =>
@@ -50,13 +55,16 @@ class DefaultKeyedTabControllerFromUnanimated<K> extends StatefulWidget
         controller,
       ),
     );
+    properties.add(
+      ObjectFlagProperty<ValueChanged<K?>?>.has('onChanged', onChanged),
+    );
   }
 }
 
 class _DefaultKeyedTabControllerFromUnanimatedState<K>
     extends State<DefaultKeyedTabControllerFromUnanimated<K>>
     with TickerProviderStateMixin {
-  late KeyedTabController<K> _controller;
+  late final KeyedTabController<K> _controller;
 
   @override
   void initState() {
@@ -67,10 +75,12 @@ class _DefaultKeyedTabControllerFromUnanimatedState<K>
       animationDuration: widget.animationDuration,
       vsync: this,
     );
+    _controller.addListener(_onChanged);
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onChanged);
     _controller.dispose();
     super.dispose();
   }
@@ -91,5 +101,9 @@ class _DefaultKeyedTabControllerFromUnanimatedState<K>
     _controller.unanimated = widget.controller;
     _controller.animationDuration =
         widget.animationDuration ?? kTabScrollDuration;
+  }
+
+  void _onChanged() {
+    widget.onChanged?.call(_controller.currentKey);
   }
 }

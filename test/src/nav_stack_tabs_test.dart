@@ -96,7 +96,6 @@ void main() {
 
       testGoldens('Change tabs with KeyedTabController.currentKey', (t) async {
         t.binding.window.physicalSizeTestValue = _screenSize;
-        String s(String screenName) => 'fromKeys/currentKey/$screenName';
 
         await t.pumpWidget(app.MyApp());
         await screenMatchesGolden(t, _k_123_1);

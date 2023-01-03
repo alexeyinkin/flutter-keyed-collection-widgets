@@ -1,3 +1,8 @@
+## 0.4.3
+
+* Added `onChanged` callback to `DefaultKeyedTabController.fromKeys`
+  and `DefaultKeyedTabController.fromUnanimated`.
+
 ## 0.4.2
 
 * Added `KeyedBottomNavigationBar.keyOrder`.

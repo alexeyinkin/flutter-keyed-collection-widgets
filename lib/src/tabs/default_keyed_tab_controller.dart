@@ -24,10 +24,11 @@ abstract class DefaultKeyedTabController<K> extends Widget {
   /// the existing controller will be preserved and updated.
   const factory DefaultKeyedTabController.fromKeys({
     Key? key,
-    required List<K> keys,
-    K? initialKey,
     required Widget child,
+    required List<K> keys,
     Duration? animationDuration,
+    K? initialKey,
+    ValueChanged<K?>? onChanged,
   }) = DefaultKeyedTabControllerFromKeys<K>;
 
   /// Provides [KeyedTabController] that is linked to a given
@@ -38,8 +39,9 @@ abstract class DefaultKeyedTabController<K> extends Widget {
   /// to the new [controller].
   const factory DefaultKeyedTabController.fromUnanimated({
     Key? key,
-    required UnanimatedKeyedTabController<K> controller,
     required Widget child,
+    required UnanimatedKeyedTabController<K> controller,
     Duration? animationDuration,
+    ValueChanged<K?>? onChanged,
   }) = DefaultKeyedTabControllerFromUnanimated<K>;
 }

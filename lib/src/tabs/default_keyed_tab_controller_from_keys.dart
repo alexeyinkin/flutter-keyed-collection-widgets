@@ -15,23 +15,28 @@ class DefaultKeyedTabControllerFromKeys<K> extends StatefulWidget
   ///
   const DefaultKeyedTabControllerFromKeys({
     super.key,
-    required this.keys,
-    this.initialKey,
     required this.child,
+    required this.keys,
     this.animationDuration,
+    this.initialKey,
+    this.onChanged,
   });
 
-  /// The tab keys this [KeyedTabController].
-  final List<K> keys;
-
-  /// The key for the initially selected tab.
-  final K? initialKey;
+  /// See [DefaultTabController.animationDuration].
+  final Duration? animationDuration;
 
   /// See [DefaultTabController.child].
   final Widget child;
 
-  /// See [DefaultTabController.animationDuration].
-  final Duration? animationDuration;
+  /// The key for the initially selected tab.
+  final K? initialKey;
+
+  /// The tab keys this [KeyedTabController].
+  final List<K> keys;
+
+  /// The callback to be called when the controller value changes
+  /// or animation ticks.
+  final ValueChanged<K?>? onChanged;
 
   @override
   State<DefaultKeyedTabControllerFromKeys> createState() =>
@@ -48,13 +53,16 @@ class DefaultKeyedTabControllerFromKeys<K> extends StatefulWidget
     );
     properties.add(DiagnosticsProperty<K?>('initialKey', initialKey));
     properties.add(IterableProperty<K>('keys', keys));
+    properties.add(
+      ObjectFlagProperty<ValueChanged<K?>?>.has('onChanged', onChanged),
+    );
   }
 }
 
 class _DefaultKeyedTabControllerFromKeysState<K>
     extends State<DefaultKeyedTabControllerFromKeys<K>>
     with TickerProviderStateMixin {
-  late KeyedTabController<K> _controller;
+  late final KeyedTabController<K> _controller;
 
   @override
   void initState() {
@@ -66,10 +74,12 @@ class _DefaultKeyedTabControllerFromKeysState<K>
       initialKey: widget.initialKey ?? widget.keys.first,
       animationDuration: widget.animationDuration,
     );
+    _controller.addListener(_onChanged);
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onChanged);
     _controller.dispose();
     super.dispose();
   }
@@ -90,5 +100,9 @@ class _DefaultKeyedTabControllerFromKeysState<K>
     _controller.keys = widget.keys;
     _controller.animationDuration =
         widget.animationDuration ?? kTabScrollDuration;
+  }
+
+  void _onChanged() {
+    widget.onChanged?.call(_controller.currentKey);
   }
 }
