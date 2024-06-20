@@ -32,7 +32,7 @@ void main() {
   group('KeyedBottomNavigationBar, KeyedStack, Tabs.', () {
     group('DefaultKeyedTabController.fromKeys.', () {
       testGoldens('Change tabs with UI', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await screenMatchesGolden(t, _k_123_1);
@@ -71,7 +71,7 @@ void main() {
       });
 
       testGoldens('Change animation duration', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await screenMatchesGolden(t, _k_123_1);
@@ -79,7 +79,7 @@ void main() {
         // Switch to 'two' tab, it becomes current.
         await t.tap(find.byKey(const ValueKey('k_two')));
         final pumps1 = await t.pumpAndSettle(const Duration(milliseconds: 100));
-        expect(pumps1, 5);
+        expect(pumps1, 8);
         await screenMatchesGolden(t, _k_123_2);
 
         // Set longer animation
@@ -95,7 +95,7 @@ void main() {
       });
 
       testGoldens('Change tabs with KeyedTabController.currentKey', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await screenMatchesGolden(t, _k_123_1);
@@ -134,7 +134,7 @@ void main() {
       });
 
       testGoldens('Change tabs with KeyedTabController.index', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await screenMatchesGolden(t, _k_123_1);
@@ -165,7 +165,7 @@ void main() {
 
     group('DefaultKeyedTabController.fromUnanimated', () {
       testGoldens('Change tabs with UI', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));
@@ -205,7 +205,7 @@ void main() {
       });
 
       testGoldens('Change animation duration', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));
@@ -214,7 +214,7 @@ void main() {
         // Switch to 'two' tab, it becomes current.
         await t.tap(find.byKey(const ValueKey('u_two')));
         final pumps1 = await t.pumpAndSettle(const Duration(milliseconds: 100));
-        expect(pumps1, 5);
+        expect(pumps1, 8);
         await screenMatchesGolden(t, _u_123_2);
 
         // Set longer animation
@@ -236,7 +236,7 @@ void main() {
 
       testGoldens('Change tabs with UnanimatedKeyedTabController.currentKey',
           (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+            t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));
@@ -276,7 +276,7 @@ void main() {
       });
 
       testGoldens('Change tabs with KeyedTabController.currentKey', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));
@@ -317,7 +317,7 @@ void main() {
       });
 
       testGoldens('Change tabs with KeyedTabController.index', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));
@@ -363,7 +363,7 @@ void main() {
       });
 
       testGoldens('Re-create UnanimatedKeyedTabController', (t) async {
-        t.binding.window.physicalSizeTestValue = _screenSize;
+        t.view.physicalSize = _screenSize;
 
         await t.pumpWidget(app.MyApp());
         await t.tap(find.widgetWithText(InkResponse, 'fromUnanimated'));

@@ -13,7 +13,7 @@ const _kTabHeight = 46.0;
 /// A replacement to [TabBar] that uses a map of children instead of a list.
 ///
 /// If you don't need [onTap] that works with keys, you may instead just do
-/// ```
+/// ```dart
 /// TabBar(
 ///   controller: controller,
 ///   tabs: controller.mapToList(tabMap),
@@ -72,7 +72,7 @@ class KeyedTabBar<K extends Object> extends TabBar {
     Color? unselectedLabelColor,
     TextStyle? unselectedLabelStyle,
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
-    MaterialStateProperty<Color?>? overlayColor,
+    WidgetStateProperty<Color?>? overlayColor,
     MouseCursor? mouseCursor,
     bool? enableFeedback,
     ValueChanged<K>? onTap,
@@ -150,7 +150,7 @@ class _KeyedTabBarWithDefaultController<K extends Object>
   final Color? unselectedLabelColor;
   final TextStyle? unselectedLabelStyle;
   final DragStartBehavior dragStartBehavior;
-  final MaterialStateProperty<Color?>? overlayColor;
+  final WidgetStateProperty<Color?>? overlayColor;
   final MouseCursor? mouseCursor;
   final bool? enableFeedback;
   final ValueChanged<K>? onTap;
@@ -246,7 +246,7 @@ class _KeyedTabBarWithDefaultController<K extends Object>
       EnumProperty<DragStartBehavior>('dragStartBehavior', dragStartBehavior),
     );
     properties.add(
-      DiagnosticsProperty<MaterialStateProperty<Color?>?>(
+      DiagnosticsProperty<WidgetStateProperty<Color?>?>(
         'overlayColor',
         overlayColor,
       ),

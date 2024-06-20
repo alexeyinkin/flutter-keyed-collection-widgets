@@ -75,6 +75,7 @@ build/
 !**/ios/**/default.perspectivev3
 
 *.g.dart
+!/example/**/*.g.dart
 coverage
 failures
 pubspec.lock

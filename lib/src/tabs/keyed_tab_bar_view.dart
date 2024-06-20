@@ -8,7 +8,7 @@ import 'keyed_tab_controller.dart';
 /// A replacement to [TabBarView] that uses a map of children instead of a list.
 ///
 /// Or you may instead just do
-/// ```
+/// ```dart
 /// TabBarView(
 ///   controller: controller,
 ///   children: controller.mapToList(childrenMap),

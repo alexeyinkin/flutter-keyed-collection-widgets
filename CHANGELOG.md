@@ -1,3 +1,8 @@
+## 0.4.4
+
+* Fixed liter issues.
+* Generate golden screenshots for Material 3.
+
 ## 0.4.3
 
 * Added `onChanged` callback to `DefaultKeyedTabController.fromKeys`
